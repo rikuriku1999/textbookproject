@@ -31,9 +31,9 @@ def mypagefunc(request):
     
 def loginfunc(request):
     if request.method=='POST':
-        email2 = request.POST['email']
+        username2 = request.POST['username']
         password2 = request.POST['password']
-        user = authenticate(request, email=email2, password=password2)
+        user = authenticate(request, username=username2, password=password2)
         if user is not None:
             login(request, user)
             return redirect('list')

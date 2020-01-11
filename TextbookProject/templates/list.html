@@ -4,17 +4,20 @@
 {% block customcss %}
 <style>
 div.card-card{
-    padding: 30px;   
+    margin:5px;
+    float: left;
+    width:200px;
   
 }
 
 div.listcontainer{
-    display: flex;
+    padding: 0px;
+    
 
 }
  div.card{
-
-    display: table-cell;
+    width:150px;
+    padding: 0px;
  
 }
 </style>
@@ -65,12 +68,12 @@ div.listcontainer{
 {% block content %}
 <div class="listcontainer">
 <div class="card-card" >
-<div class="card" style="width: 18rem;">
+<div class="card" style="width: 200px; height: 200px;">
     <img src="..." class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Card title</h5>
       <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+      
     </div>
   </div>
 </div>
