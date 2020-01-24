@@ -48,10 +48,11 @@ def signupfunc(request):
         email2 = request.POST['email']
         password2 = request.POST['password']
         try:
-            User.objects.get(email=email2)
+            User.objects.get(username=username2)
             return render(request, 'signup.html', {'error':'このユーザーは登録されています'})
 
         except :
             user = User.objects.create_user(username2,email2 , password2)
             return render(request, 'login.html', {'some':100})
     return render(request, 'signup.html', {'some':100})
+    
