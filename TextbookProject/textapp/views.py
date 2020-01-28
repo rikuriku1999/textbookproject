@@ -20,14 +20,15 @@ class Create(CreateView):
     fields = ('title','content','author','images')
     success_url = reverse_lazy('list')
 
+
 def detailfunc(request,pk):
     object_list = Textbookmodel.objects.get(pk=pk)
     object_list2 = Commentmodel.objects.all()
-    return render(request, 'detail.html',{'object_list':object_list},{'object_list2':object_list2})
+    return render(request, 'detail.html',{'object_list':object_list})
 
 def mypagefunc(request):
     object_list = Textbookmodel.objects.all()
-    return render(request,)
+    return render(request, '')
     
 def loginfunc(request):
     if request.method=='POST':

@@ -1,7 +1,81 @@
 {% extends 'base.html' %}
+
+{% block customcss %}
+<style>
+div.box{
+    width:1000px;
+    margin:auto;
+    background-color:#FFFFFF;
+    text-align: left;
+    position: relative;}
+    
+address{background-color: lightskyblue;
+    color: #FFFFFF;
+    text-align: center;
+    position: fixed;
+    bottom:0px;
+    width:100%;
+    }
+address a{color:#FFFEFF}
+</style>
+{% endblock customcss %}
+
 {% block header %}
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#" style="font-size: 50px; font-family:fantasy;">TexTrade</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">マイページ<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">カテゴリ</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                カテゴリ
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+<div class="alert alert-info"  role="alert"> 
+ 
+  </div>
 {% endblock header %}
+
 {% block content %}
+<div class='box'>
+<h2>{{ object_list.title }}</h2>
+{% if object_list.images %}
+<p><img src="{{object_list.images.url}}" width=400 height=300  alt="..."></p>
+{% endif %}
+<p>{{ object_list.content }}</p>
+</div>
 {% endblock content %}
+
 {% block footer %}
+<address>
+    Copy Right <a href="">TexTrade</a>
+     Co.,Ltd. since 2020
+  </address>
 {% endblock footer %}
