@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import listfunc ,Create ,detailfunc ,mypagefunc ,loginfunc ,signupfunc
+from .views import listfunc ,Create ,detailfunc ,mypagefunc ,loginfunc ,signupfunc ,goodfunc
 
 urlpatterns = [
     path('list/',listfunc,name='list'),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('mypage/',mypagefunc,name='mypage'),
     path('login/',loginfunc,name='login'),
     path('signup/',signupfunc,name='signup'),
+    path('good/<int:pk>',goodfunc,name='good'),
+    
 ]
