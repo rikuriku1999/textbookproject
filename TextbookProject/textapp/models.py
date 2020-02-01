@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -37,5 +40,15 @@ class Commentmodel(models.Model):
         ordering = ['-created_date']
 
 class Usermodel(models.Model):
-    nickname = models.CharField(max_length=50)
-    intro = models.TextField(blank=True,default='')
+    intro = models.TextField(blank=True, default='')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile',null='True')
+    gender = models.CharField(max_length=20, blank=True)
+    college = models.CharField(max_length=30, blank=True)
+
+    def __str__(self):
+        return self.user
+
+
+
+
+

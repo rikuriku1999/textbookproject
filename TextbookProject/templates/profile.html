@@ -2,7 +2,7 @@
 {% block header %}
 <header class="sticky-top">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'list' %}" style="font-size: 50px; font-family:fantasy;">TexTrade</a>
+        <a class="navbar-brand" href="#" style="font-size: 50px; font-family:fantasy;">TexTrade</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -42,13 +42,6 @@
   </div>
 {% endblock header %}
 {% block content %}
-<ul>
-  <li>名前: {{ user.username }}</li>
-  <li>性別: {{ user.profile.gender }}</li>
-  <li>大学: {{ user.profile.college }}</li>
-  <li>自己紹介: {{ user.profile.intro }}</li>
-</ul>
-<a href="{% url 'editmypage' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">プロフィール編集</a>
 {% endblock content %}
 {% block footer %}
 {% endblock footer %}

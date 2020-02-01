@@ -1,12 +1,13 @@
 from django.shortcuts import render ,redirect
-from .models import Textbookmodel ,Commentmodel
+from .models import Textbookmodel ,Commentmodel ,Usermodel
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.views.generic import CreateView
+from django.views.generic import CreateView ,UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from . import forms
+from .forms import UserForm
 
 # Create your views here.
 
@@ -45,9 +46,46 @@ def detailfunc(request,pk):
             
 
 
+
 def mypagefunc(request):
-    object_list = Textbookmodel.objects.all()
-    return render(request, '')
+    object_list = Usermodel.objects.all()
+    return render(request, 'mypage.html',{'object_list':object_list})
+
+def editmypagefunc(request):
+    form = UserForm(request.POST or None)
+    if form.is_valid():
+        profile = Usermodel()
+        profile.gender = form.cleaned_data['gender']
+        profile.intro = form.cleaned_data['intro']
+        profile.college = form.cleaned_data['college']
+
+        if Usermodel.objects.exists():
+            Usermodel.objects.update(
+                gender=profile.gender,
+                college=profile.college,
+                intro=profile.intro,
+                
+            )
+        else:
+            Usermodel.objects.create(
+                gender=profile.gender,
+                college=profile.college,
+                intro=profile.intro,
+                user=request.user
+            )
+        return redirect('mypage')
+
+    return render(request, 'editmypage.html', {'form':form})
+        
+
+class Editmypage(UpdateView):
+    template_name='editmypage.html'
+    model=Usermodel
+    fields = ('intro','college','gender','user')
+    success_url = reverse_lazy('mypage')
+
+def profilefunc(request):
+    object_list = Usermodel.objects.all()
     
 def loginfunc(request):
     if request.method=='POST':
