@@ -1,5 +1,5 @@
-from django.shortcuts import render ,redirect
-from .models import Textbookmodel ,Commentmodel ,Usermodel
+from django.shortcuts import render ,redirect ,get_object_or_404
+from .models import Textbookmodel ,Commentmodel ,Usermodel ,Chatroommodel ,Chatmodel
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.views.generic import CreateView ,UpdateView
@@ -21,6 +21,80 @@ class Create(CreateView):
     model=Textbookmodel
     fields = ('title','content','author','images')
     success_url = reverse_lazy('list')
+
+def chatroomfunc(request,pk):
+    object_list = Textbookmodel.objects.get(pk=pk)
+    chatroomlist = Chatroommodel(pk=pk)
+    
+    form = forms.ChatForm(request.POST or None)
+    if Chatroommodel.objects.exists():
+        pass
+    else:
+        Chatroommodel.objects.create(
+            buyer = request.user,
+            target = object_list,
+            seller = object_list.author,
+        )
+    chat_list = Chatroommodel.objects.get(target=object_list)
+    chats=Chatmodel.objects.filter(target=chat_list)
+    if request.method == "POST":
+        if form.is_valid():
+            chat = form.save(commit=False)
+            if request.user == object_list.author:
+                chat.sender = chat_list.seller
+                chat.receiver = chat_list.buyer
+                chat.target = chat_list
+                chat.save()  
+            else:
+                chat.sender = chat_list.buyer
+                chat.receiver = chat_list.seller
+                chat.target = chat_list
+                chat.save()
+        else:
+            form = forms.ChatForm()
+    return render(request, 'chatroom.html',{
+        'chatroomlist':chatroomlist,
+        'chats':chats,
+        'form':form,
+        })
+
+def chatfunc(request,pk):
+    form = forms.ChatForm(request.POST or None)
+    object_list=Textbookmodel.objects.get(pk=pk)
+    chats=Chatmodel.objects.filter(sender=object_list)
+    if request.method == "POST":
+        if form.is_valid():
+            chat = form.save(commit=False)
+            chat.sender = object_list.author
+            chat.receiver = request.user
+            
+            chat.save()
+        else:
+            form = forms.CommentForm()
+        
+    return render(request, 'chat.html')
+
+def deletefunc(request,pk):
+    Textbookmodel.objects.filter(pk=pk).delete()
+    return redirect('mypage')
+
+def editdetailfunc(request,pk):
+    form = forms.DetailForm(request.POST ,request.FILES)
+    detail = Textbookmodel(pk=pk)
+    if form.is_valid():
+        detail.title = form.cleaned_data['title']
+        detail.content = form.cleaned_data['content']
+        
+        Textbookmodel.objects.filter(pk=pk).update(
+            title=detail.title,
+            content=detail.content,
+            
+        )
+        return redirect("detail",pk=pk)
+    return render(request,'editdetail.html',{
+        'form':form,
+        'detail':detail,
+        })
 
 
 def detailfunc(request,pk):
@@ -45,11 +119,16 @@ def detailfunc(request,pk):
         })
             
 
-
-
 def mypagefunc(request):
     object_list = Usermodel.objects.all()
-    return render(request, 'mypage.html',{'object_list':object_list})
+    post = Textbookmodel.objects.filter(author__exact=request.user)
+    if Textbookmodel.objects.exists():
+        return render(request, 'mypage.html',{
+            'object_list':object_list,
+            'post':post})
+    else :
+        return render(request, 'mypage.html',{
+            'object_list':object_list})
 
 def editmypagefunc(request):
     form = UserForm(request.POST or None)
@@ -64,7 +143,6 @@ def editmypagefunc(request):
                 gender=profile.gender,
                 college=profile.college,
                 intro=profile.intro,
-                
             )
         else:
             Usermodel.objects.create(

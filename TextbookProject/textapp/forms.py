@@ -34,3 +34,29 @@ class UserForm(forms.Form):
         widget=forms.Select,
         choices=GENDER_CHOICES
     )
+
+class DetailForm(forms.Form):
+    class Meta:
+        model = models.Textbookmodel
+        fields = ('title','content','images',)
+
+    title = forms.CharField(
+        required=True,
+        widget=forms.TextInput(),
+        max_length=30,
+    )
+    content = forms.CharField(
+        max_length=200,
+        required=True,
+        widget=forms.Textarea,
+    )
+    
+class ChatForm(forms.ModelForm):
+    class Meta:
+        model = models.Chatmodel
+        fields = ('text',)
+    text = forms.CharField(
+        max_length=200,
+        required = True,
+        widget = forms.TextInput,
+    )

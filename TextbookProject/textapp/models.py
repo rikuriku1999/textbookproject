@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.dispatch import receiver 
 
 # Create your models here.
 
@@ -27,9 +27,6 @@ class Textbookmodel(models.Model):
     def __str__(self):
         return self.title
 
-    
-
-
 class Commentmodel(models.Model):
     text = models.TextField()
     target = models.ForeignKey('Textbookmodel', on_delete=models.CASCADE)
@@ -39,6 +36,9 @@ class Commentmodel(models.Model):
     class Meta:
         ordering = ['-created_date']
 
+    def __str__(self):
+        return str(self.target)
+
 class Usermodel(models.Model):
     intro = models.TextField(blank=True, default='')
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile',null='True')
@@ -46,7 +46,26 @@ class Usermodel(models.Model):
     college = models.CharField(max_length=30, blank=True)
 
     def __str__(self):
-        return self.user
+        return str(self.user)
+
+class Chatmodel(models.Model):
+    sender = models.CharField(max_length=30)
+    receiver = models.CharField(max_length=30)
+    created_date= models.DateTimeField(default=timezone.now)
+    text = models.CharField(max_length=100, blank=False)
+    target = models.ForeignKey('Chatroommodel',on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['created_date']
+
+class Chatroommodel(models.Model):
+    buyer = models.ForeignKey('auth.User',on_delete=models.CASCADE)
+    seller = models.CharField(max_length=30)
+    target = models.OneToOneField('Textbookmodel',on_delete=models.CASCADE, related_name='chatroomlist' ,null=True)
+    created_date=models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return str(self.target)
 
 
 
