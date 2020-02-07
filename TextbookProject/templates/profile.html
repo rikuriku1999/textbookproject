@@ -38,10 +38,37 @@
       </nav>
     </header>
 <div class="alert alert-info"  role="alert"> 
-    <h3>マイページ</h3>
+    <h3>{{ profile.user}}さんのプロフィール</h3>
   </div>
 {% endblock header %}
 {% block content %}
+<div class="box">
+  <ul>
+    <li>名前: {{ profile.user }}</li>
+    <li>性別: {{ profile.gender }}</li>
+    <li>大学: {{ profile.college }}</li>
+    <li>自己紹介: {{ profile.intro }}</li>
+  </ul>
+
+  <h3>出品した教科書</h3>
+  <div class="listcontainer">
+  {% for item in objects %}
+  <div class="card-card" >
+  <a href="{% url 'detail' item.pk %}"></a>
+  <div class="card" style="width: 150px; height: 150px;">
+    {% if item.images %}
+      <p><img src="{{item.images.url}}" width=150 height=110 class="card-img-top" alt="..."></p>
+    {% endif %}
+      <div class="card-b">
+        <h6 class="card-title">{{item.title}}</h6>
+      </div>
+    </div>
+  </div>
+  {% endfor%}
+  </div>
+  <div class="post"><a href="{% url 'create' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">新規投稿</a>
+  </div>
+  </div>
 {% endblock content %}
 {% block footer %}
 {% endblock footer %}

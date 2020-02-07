@@ -12,22 +12,44 @@ from .forms import UserForm
 # Create your views here.
 
 def listfunc(request):
-    object_list = Textbookmodel.objects.all()
-    return render(request, 'list.html',{'object_list':object_list})
+    form = forms.SearchForm(request.POST or None)  
+    search = ''
+    if request.method == "POST":
+        if form.is_valid():
+            search = form.cleaned_data['search']
+            
+    object_list = Textbookmodel.objects.filter(trading=False).filter(title__contains = search)
+    return render(request, 'list.html',{
+        'object_list':object_list,
+        'form':form,
+        })
+
+def aoyamafunc(request):
+    object_list = Textbookmodel.objects.filter(collegecategory__contains = "青山学院大学")
+    return render(request,'list.html',{
+        'object_list':object_list,
+    })
+
+def keiofunc(request):
+    object_list = Textbookmodel.objects.filter(collegecategory__contains = "慶應義塾大学")
+    return render(request,'list.html',{
+        'object_list':object_list,
+    })
 
 
 class Create(CreateView):
     template_name='create.html'
     model=Textbookmodel
-    fields = ('title','content','author','images')
+    fields = ('title','content','author','images','price','collegecategory','facultycategory','status')
     success_url = reverse_lazy('list')
 
 def chatroomfunc(request,pk):
     object_list = Textbookmodel.objects.get(pk=pk)
+    
     chatroomlist = Chatroommodel(pk=pk)
     
     form = forms.ChatForm(request.POST or None)
-    if Chatroommodel.objects.exists():
+    if Chatroommodel.objects.filter(target=object_list).exists():
         pass
     else:
         Chatroommodel.objects.create(
@@ -35,18 +57,25 @@ def chatroomfunc(request,pk):
             target = object_list,
             seller = object_list.author,
         )
+        Textbookmodel.objects.filter(pk=pk).update(
+            trading = True
+        )
+        
     chat_list = Chatroommodel.objects.get(target=object_list)
     chats=Chatmodel.objects.filter(target=chat_list)
     if request.method == "POST":
         if form.is_valid():
             chat = form.save(commit=False)
-            if request.user == object_list.author:
-                chat.sender = chat_list.seller
+            if str(object_list.author) == str(request.user):
+                print(object_list.author)
+                chat.sender = request.user
                 chat.receiver = chat_list.buyer
                 chat.target = chat_list
                 chat.save()  
             else:
-                chat.sender = chat_list.buyer
+                print(object_list.author)
+                print(request.user)
+                chat.sender = request.user
                 chat.receiver = chat_list.seller
                 chat.target = chat_list
                 chat.save()
@@ -56,6 +85,7 @@ def chatroomfunc(request,pk):
         'chatroomlist':chatroomlist,
         'chats':chats,
         'form':form,
+        'object_list':object_list,
         })
 
 def chatfunc(request,pk):
@@ -120,15 +150,19 @@ def detailfunc(request,pk):
             
 
 def mypagefunc(request):
+    
     object_list = Usermodel.objects.all()
     post = Textbookmodel.objects.filter(author__exact=request.user)
+    trading = Textbookmodel.objects.filter(author__exact=request.user).filter(trading=True)
     if Textbookmodel.objects.exists():
         return render(request, 'mypage.html',{
             'object_list':object_list,
-            'post':post})
+            'post':post,
+            'trading':trading})
     else :
         return render(request, 'mypage.html',{
-            'object_list':object_list})
+            'object_list':object_list,
+            'trading':trading})
 
 def editmypagefunc(request):
     form = UserForm(request.POST or None)
@@ -138,8 +172,8 @@ def editmypagefunc(request):
         profile.intro = form.cleaned_data['intro']
         profile.college = form.cleaned_data['college']
 
-        if Usermodel.objects.exists():
-            Usermodel.objects.update(
+        if Usermodel.objects.filter(user=request.user).exists():
+            Usermodel.objects.filter(user=request.user).update(
                 gender=profile.gender,
                 college=profile.college,
                 intro=profile.intro,
@@ -154,7 +188,14 @@ def editmypagefunc(request):
         return redirect('mypage')
 
     return render(request, 'editmypage.html', {'form':form})
-        
+    
+def profilefunc(request,pk):
+    profile=Usermodel.objects.get(pk=pk)
+    objects=Textbookmodel.objects.filter(author__exact=profile.user)
+    return render(request,'profile.html',{
+        'profile':profile,
+        'objects':objects,
+    })
 
 class Editmypage(UpdateView):
     template_name='editmypage.html'
@@ -162,8 +203,7 @@ class Editmypage(UpdateView):
     fields = ('intro','college','gender','user')
     success_url = reverse_lazy('mypage')
 
-def profilefunc(request):
-    object_list = Usermodel.objects.all()
+
     
 def loginfunc(request):
     if request.method=='POST':
@@ -203,4 +243,8 @@ def goodfunc(request,pk):
         post.save()
     return redirect('detail' ,pk=pk)
     
-
+def goodlistfunc(request):
+    goodlist=Textbookmodel.objects.filter(goodtext__contains=request.user)
+    return render(request,"goodlist.html",{
+        'goodlist':goodlist,
+    })

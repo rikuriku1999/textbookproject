@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import listfunc ,Create ,detailfunc ,mypagefunc ,loginfunc ,signupfunc ,goodfunc ,profilefunc ,editmypagefunc ,Editmypage ,deletefunc ,editdetailfunc ,chatfunc ,chatroomfunc
+from .views import listfunc ,Create ,detailfunc ,mypagefunc ,loginfunc ,signupfunc ,goodfunc ,profilefunc ,editmypagefunc ,Editmypage ,deletefunc ,editdetailfunc ,chatfunc ,chatroomfunc ,aoyamafunc ,keiofunc ,profilefunc ,goodlistfunc
 
 urlpatterns = [
     path('list/',listfunc,name='list'),
@@ -15,4 +15,8 @@ urlpatterns = [
     path('delete/<int:pk>',deletefunc,name='delete'),
     path('editdetail/<int:pk>', editdetailfunc,name='editdetail'),
     path('chatroom/<int:pk>',chatroomfunc,name='chatroom'),
+    path('list/aoyama/',aoyamafunc,name='aoyama'),
+    path('list/keio/' ,keiofunc,name='keio'),
+    path('profile/<int:pk>',profilefunc,name='profile'),
+    path('goodlist/',goodlistfunc,name="goodlist"),
 ]

@@ -3,7 +3,8 @@ from . import models
 
 COLLEGE_CHOICES = (
     ('慶應義塾大学','慶應義塾大学'),
-    ('早稲田大学','早稲田大学'))
+    ('早稲田大学','早稲田大学'),
+    ('青山学院大学','青山学院大学'))
 
 GENDER_CHOICES = (
     ('男性','男性'),
@@ -59,4 +60,11 @@ class ChatForm(forms.ModelForm):
         max_length=200,
         required = True,
         widget = forms.TextInput,
+    )
+
+class SearchForm(forms.Form):
+    search = forms.CharField(
+        initial='',
+        label='search',
+        required = False, # 必須ではない
     )

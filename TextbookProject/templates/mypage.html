@@ -118,6 +118,22 @@ div.post{
   <li>自己紹介: {{ user.profile.intro }}</li>
 </ul>
 <a href="{% url 'editmypage' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">プロフィール編集</a>
+<h3>取引中の教科書</h3>
+    <div class="listcontainer">
+    {% for item in trading %}
+    <div class="card-card" >
+    <a href="{% url 'chatroom' item.pk %}"></a>
+    <div class="card" style="width: 150px; height: 150px;">
+      {% if item.images %}
+        <p><img src="{{item.images.url}}" width=150 height=110 class="card-img-top" alt="..."></p>
+      {% endif %}
+        <div class="card-b">
+          <h6 class="card-title">{{item.title}}</h6>
+        </div>
+      </div>
+    </div>
+    {% endfor%}
+    </div>
 <br>
 <h3>出品した教科書</h3>
     <div class="listcontainer">
